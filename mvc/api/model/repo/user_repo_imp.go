@@ -6,13 +6,19 @@ import (
 	"github.com/Podre-Henrique/arquitetura-api/mvc/api/model"
 )
 
+func NewMysqlUserRepo(db *sql.DB) UserRepo {
+	return &MysqlUserRepo{DB: db}
+}
+
 type MysqlUserRepo struct {
 	DB *sql.DB
 }
 
-func (ur *MysqlUserRepo) CreateUser(u *model.User) {
+func (ur *MysqlUserRepo) CreateUser(u *model.User, pass string) *model.User {
+	u.SetPassword(pass)
 	query := "INSERT INTO users(name,password,email) values(?,?,?)"
 	ur.DB.Exec(query, u.Name, u.HashedPassword, u.Email)
+	return u
 }
 
 func (ur *MysqlUserRepo) BlockUser(email string) {

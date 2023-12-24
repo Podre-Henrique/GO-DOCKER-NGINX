@@ -6,6 +6,10 @@ import (
 	"github.com/Podre-Henrique/arquitetura-api/mvc/api/model"
 )
 
+func NewMysqlLoanRepo(db *sql.DB) LoanRepo {
+	return &MysqlLoanRepo{DB: db}
+}
+
 type MysqlLoanRepo struct {
 	DB *sql.DB
 }

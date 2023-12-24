@@ -1,7 +1,9 @@
 package controller
 
+import "github.com/gofiber/fiber/v2"
+
 type UserController interface {
-	CreateUser()
-	GetUser()
-	LoginUser()
+	CreateUser(c *fiber.Ctx) error
+	GetUser(c *fiber.Ctx) error
+	LoginUser(c *fiber.Ctx) error
 }

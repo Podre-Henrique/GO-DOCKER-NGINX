@@ -1,6 +1,8 @@
 package repo
 
-import "github.com/Podre-Henrique/arquitetura-api/mvc/api/model"
+import (
+	"github.com/Podre-Henrique/arquitetura-api/mvc/api/model"
+)
 
 type LoanRepo interface {
 	CreateLoan(b *model.Loan)

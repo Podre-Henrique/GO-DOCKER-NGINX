@@ -6,6 +6,10 @@ import (
 	"github.com/Podre-Henrique/arquitetura-api/mvc/api/model"
 )
 
+func NewMysqlBookRepo(db *sql.DB) BookRepo {
+	return &MysqlBookRepo{DB: db}
+}
+
 type MysqlBookRepo struct {
 	DB *sql.DB
 }
