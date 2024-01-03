@@ -12,13 +12,13 @@ import (
 // Database settings
 
 var (
-	user     = os.Getenv("MYSQL_USER")
 	password = os.Getenv("MYSQL_PASS")
 	database = os.Getenv("MYSQL_DATABASE")
 )
 
 func Connect() *sql.DB {
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@/%s", user, password, database))
+	conn := fmt.Sprintf("root:%s@tcp(mariadb:3306)/%s", password, database)
+	db, err := sql.Open("mysql", conn)
 	if err != nil {
 		log.Fatal(err)
 	}

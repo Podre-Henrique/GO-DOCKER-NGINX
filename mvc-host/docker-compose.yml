@@ -1,0 +1,84 @@
+version: '3.8'
+services:
+  mariadb:
+    network_mode: host
+    image: mariadb:latest
+    hostname: mariadb
+    healthcheck:
+      test: "mariadb -h localhost -u root -pHinamizawa*_* -e \"use go_test;\""
+      start_period: 10s
+      interval: 5s
+      retries: 10
+    environment:
+      MYSQL_ROOT_PASSWORD: Hinamizawa*_*
+      MYSQL_DATABASE: go_test
+    volumes:
+      - ./scripts:/docker-entrypoint-initdb.d
+      - mariadb_data:/var/lib/mysql
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: '0.24GB'
+
+  api1: 
+    hostname: api1
+    network_mode: host
+    build: ./
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      PORT: 8080
+      MYSQL_USER: pedro157
+      MYSQL_PASS: Hinamizawa*_*
+      MYSQL_DATABASE: go_test
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: '0.24GB'
+    expose:
+      - 8080
+  api2:
+    hostname: api2
+    network_mode: host
+    build: ./
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      PORT: 8081   
+      MYSQL_USER: pedro157
+      MYSQL_PASS: Hinamizawa*_*
+      MYSQL_DATABASE: go_test
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: '0.24GB'
+    expose:
+      - 8081
+
+  nginx: 
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api1
+      - api2
+    ulimits:
+      nproc: 1000000
+      nofile:
+        soft: 1000000
+        hard: 1000000
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: '0.24GB'
+    network_mode: host
+
+volumes:
+  mariadb_data:
